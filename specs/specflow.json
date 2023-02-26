@@ -1,0 +1,8 @@
+{
+  "stepAssemblies": [
+  ],
+  "livingDocGenerator": {
+    "enabled": true,
+    "filePath": "../../TestExecution.json"
+  }
+}
