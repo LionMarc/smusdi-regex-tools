@@ -7,6 +7,7 @@ namespace Smusdi.Wasm;
 [JsonSerializable(typeof(RegexValidationResult))]
 [JsonSerializable(typeof(StringPartsExtractor))]
 [JsonSerializable(typeof(StringPartsExtractorValidationResult))]
+[JsonSerializable(typeof(RegexValidationResult))]
 public partial class SmusdiSerializationContext : JsonSerializerContext
 {
 }

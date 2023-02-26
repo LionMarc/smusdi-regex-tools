@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>String parts extractor</h1>
+<mat-dialog-content class="flex-row-stretch fxFlex">
+    <mat-card class="flex-column-stretch sub-card fxFlex">
+        <mat-card-header>
+            <mat-card-title>
+                Extractor settings
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex-column-stretch">
+            <mat-form-field>
+                <mat-label>Enter the regular expression</mat-label>
+                <input matInput [formControl]="expressionControl">
+                <mat-error *ngIf="expressionControl.invalid && expressionControl.errors?.['regex']">
+                    {{expressionControl.errors?.['regex']}}
+                </mat-error>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="flex-column-stretch sub-card fxFlex">
+        <mat-card-header>
+            <mat-card-title>
+                Testing string
+            </mat-card-title>
+        </mat-card-header>
+    </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions class="flex-row-center">
+    <span class="fxFlex"></span>
+    <button mat-button>Cancel</button>
+    <button mat-stroked-button color="primary">Submit</button>
+</mat-dialog-actions>

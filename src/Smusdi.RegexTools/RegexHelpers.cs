@@ -2,6 +2,9 @@
 
 namespace Smusdi.RegexTools;
 
+/// <summary>
+/// Some helpers to check or to process regular expressions
+/// </summary>
 public static partial class RegexHelpers
 {
     public static RegexValidationResult Validate(string pattern)

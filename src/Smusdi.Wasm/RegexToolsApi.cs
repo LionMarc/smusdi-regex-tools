@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text.Json;
+using Smusdi.RegexTools;
 
 namespace Smusdi.Wasm;
 
@@ -21,5 +22,29 @@ public partial class RegexToolsApi
 
         var validationResult = extractor.Validate();
         return JsonSerializer.Serialize(validationResult, SmusdiSerializationContext.Default.StringPartsExtractorValidationResult);
+    }
+
+    [JSExport]
+    public static string ValidateRegex(string input)
+    {
+        var validationResult = RegexHelpers.Validate(input);
+        return JsonSerializer.Serialize(validationResult, SmusdiSerializationContext.Default.RegexValidationResult);
+    }
+
+    [JSExport]
+    public static string[] GetGroupNames(string input)
+    {
+        var groups = RegexHelpers.GetDefinedGroupNames(input);
+        return groups.ToArray();
+    }
+
+    [JSExport]
+    public static async Task TestingLongJob(int loopCount)
+    {
+        for (var i = 0; i < loopCount; i++)
+        {
+            Console.WriteLine($"Loop {i}/{loopCount}...");
+            await Task.Delay(10000);
+        }
     }
 }
