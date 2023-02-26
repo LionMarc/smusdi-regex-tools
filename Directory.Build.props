@@ -4,10 +4,6 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers"

@@ -62,6 +62,6 @@ Scenario: Validating an extractor with a part of type Date with no format
     Then I get the validation errors
     """
     {
-        "parts[0]": [ "Missing format for 'Date' type." ]
+        "parts[0]": [ "For part of type 'Date', the format must be set." ]
     }
     """

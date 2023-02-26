@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-
-namespace Smusdi.RegexTools;
+﻿namespace Smusdi.RegexTools;
 
 public sealed class RegexValidationResult
 {

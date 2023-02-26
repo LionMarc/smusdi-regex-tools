@@ -166,6 +166,7 @@ dotnet_diagnostic.SA0001.severity = silent
 dotnet_diagnostic.SA1600.severity = silent
 csharp_style_prefer_top_level_statements = true:silent
 dotnet_diagnostic.SA1602.severity = silent
+dotnet_diagnostic.S1118.severity = silent
 ###############################
 # VB Coding Conventions       #
 ###############################
