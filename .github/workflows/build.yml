@@ -32,10 +32,21 @@ jobs:
       run: rm -rf src/Smusdi.Wasm/bin && rm -rf src/Smusdi.Wasm/obj
     - name: Building wasm
       run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: success() || failure()
+  
+  build_angular:
+    name: Build angular packages
+    needs: build_dotnet
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
-        name: .NET Tests
-        path: results/test-results.trx
-        reporter: dotnet-trx
+        node-version: '16.x'
+        cache: 'npm'
+    - run: cd ui && npm ci
+    - run: cd ui && npm run build:ci
+    - run: cd ui && npm run build
+    - run: cd ui && npm run test:ci
+
