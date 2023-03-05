@@ -13,6 +13,8 @@ on:
 jobs:
   setup_env:
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.setup_version.outputs.VERSION }}
     steps:
       - name: setup_version
         id: setup_version
@@ -26,8 +28,8 @@ jobs:
     needs: setup_env
     uses: ./.github/workflows/shared_build.yml
     with:
-      dotnet_package_version: ${{ steps.setup_version.outputs.VERSION }}
-      angular_package_version: ${{ steps.setup_version.outputs.VERSION }}
+      dotnet_package_version: ${{ needs.setup_env.outputs.release_version }}
+      angular_package_version: ${{ needs.setup_env.outputs.release_version }}
 
   publish_dotnet:
     name: Publish .NET package
