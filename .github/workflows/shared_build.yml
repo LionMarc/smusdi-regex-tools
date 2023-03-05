@@ -64,6 +64,7 @@ jobs:
         indicators: true
         output: both
         thresholds: '60 80'
+    - run: mv code-coverage-results.md dotnet-code-coverage-results.md
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
@@ -115,6 +116,7 @@ jobs:
         indicators: true
         output: both
         thresholds: '60 80'
+    - run: mv code-coverage-results.md angular-code-coverage-results.md
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
