@@ -8,9 +8,8 @@ describe('NgssmStringPartsExtractorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NgssmStringPartsExtractorComponent ]
-    })
-    .compileComponents();
+      imports: [NgssmStringPartsExtractorComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NgssmStringPartsExtractorComponent);
     component = fixture.componentInstance;

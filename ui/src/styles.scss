@@ -36,6 +36,7 @@ $ui-theme: mat.define-light-theme((color: (primary: $ui-primary,
 @import "@fortawesome/fontawesome-free/css/all.css";
 @import "ngssm-toolkit/styles/ngssm.scss";
 @import "ngssm-toolkit/styles/material.scss";
+@import "ngssm-regex-tools/styles/ngssm-regex-tools.scss";
 
 html,
 body {

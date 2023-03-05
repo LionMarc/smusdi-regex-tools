@@ -10,7 +10,11 @@ import { NgssmStringPartsExtractorEditorComponent } from '../components';
 export class StringPartsExtractorEditorEffect implements Effect {
   private dialog: MatDialogRef<NgssmStringPartsExtractorEditorComponent> | undefined;
 
-  public readonly processedActions: string[] = [NgssmStringPartsExtractionActionType.editStringPartsExtractor];
+  public readonly processedActions: string[] = [
+    NgssmStringPartsExtractionActionType.editStringPartsExtractor,
+    NgssmStringPartsExtractionActionType.closeStringPartsExtractorEditor,
+    NgssmStringPartsExtractionActionType.submitStringPartsExtractor
+  ];
 
   constructor(private matDialog: MatDialog) {}
 
@@ -22,6 +26,16 @@ export class StringPartsExtractorEditorEffect implements Effect {
           width: '80vw',
           height: '80vh'
         });
+
+        break;
+      }
+
+      case NgssmStringPartsExtractionActionType.closeStringPartsExtractorEditor:
+      case NgssmStringPartsExtractionActionType.submitStringPartsExtractor: {
+        this.dialog?.close();
+        this.dialog = undefined;
+
+        break;
       }
     }
   }

@@ -32,19 +32,22 @@ public partial class RegexToolsApi
     }
 
     [JSExport]
+    public static string ExtractParts(string serializedExtractor, string input)
+    {
+        var extractor = JsonSerializer.Deserialize(serializedExtractor, SmusdiSerializationContext.Default.StringPartsExtractor);
+        if (extractor == null)
+        {
+            throw new ArgumentException("Invalid input extractor", nameof(serializedExtractor));
+        }
+
+        var extractionResult = extractor.ExtractPartsFrom(input);
+        return JsonSerializer.Serialize(extractionResult, SmusdiSerializationContext.Default.StringPartsExtractionResult);
+    }
+
+    [JSExport]
     public static string[] GetGroupNames(string input)
     {
         var groups = RegexHelpers.GetDefinedGroupNames(input);
         return groups.ToArray();
-    }
-
-    [JSExport]
-    public static async Task TestingLongJob(int loopCount)
-    {
-        for (var i = 0; i < loopCount; i++)
-        {
-            Console.WriteLine($"Loop {i}/{loopCount}...");
-            await Task.Delay(10000);
-        }
     }
 }

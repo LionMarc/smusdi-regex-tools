@@ -1,57 +1,112 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { BehaviorSubject, combineLatest, Observable, take, takeUntil } from 'rxjs';
 
 import { NgSsmComponent, Store } from 'ngssm-store';
-import { StringPartsExtractorValidationResult } from '../../model';
+
 import { selectNgssmStringPartsExtractionState } from '../../state';
+import { NgssmStringPartsExtractionActionType, UpdateExpressionAction, UpdateTestingStringAction } from '../../actions';
+import { NgssmExtractedPartComponent } from '../ngssm-extracted-part/ngssm-extracted-part.component';
+import { NgssmExtractedPartResultComponent } from '../ngssm-extracted-part-result/ngssm-extracted-part-result.component';
 
 @Component({
-  selector: 'ngssm-ngssm-string-parts-extractor-editor',
+  selector: 'ngssm-string-parts-extractor-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatCardModule, MatButtonModule, MatInputModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule,
+    NgssmExtractedPartComponent,
+    NgssmExtractedPartResultComponent
+  ],
   templateUrl: './ngssm-string-parts-extractor-editor.component.html',
   styleUrls: ['./ngssm-string-parts-extractor-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgssmStringPartsExtractorEditorComponent extends NgSsmComponent {
-  public readonly expressionControl = new FormControl<string | undefined>(undefined, [
-    Validators.required,
-    (c) => this.validateExpression(c)
-  ]);
+export class NgssmStringPartsExtractorEditorComponent extends NgSsmComponent implements AfterViewInit {
+  private readonly _canSubmit$ = new BehaviorSubject<boolean>(false);
+  private readonly _extractedPartNames$ = new BehaviorSubject<string[]>([]);
+  private readonly _isValid$ = new BehaviorSubject<boolean | undefined>(undefined);
+
+  public readonly expressionControl = new FormControl<string | undefined>(undefined);
+  public readonly testingStringControl = new FormControl<string>('');
 
   constructor(store: Store) {
     super(store);
 
-    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.expression).subscribe((value) =>
-      this.expressionControl.setValue(value, { emitEvent: false })
+    this.expressionControl.valueChanges
+      .pipe(takeUntil(this.unsubscribeAll$))
+      .subscribe((value) => this.dispatchAction(new UpdateExpressionAction(value)));
+
+    combineLatest([
+      this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.validationResult),
+      this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.extractionResult)
+    ]).subscribe((v) => this._canSubmit$.next(v[0].isValid && (!v[1] || v[1].isValid)));
+
+    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.parts).subscribe((values) => {
+      const names = values.map((v) => v.name);
+      const displayedNames = this._extractedPartNames$.getValue();
+      if (names.length !== displayedNames.length || names.findIndex((n) => !displayedNames.includes(n)) !== -1) {
+        this._extractedPartNames$.next(names);
+      }
+    });
+
+    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.testingString).subscribe((value) => {
+      this.testingStringControl.setValue(value, { emitEvent: false });
+    });
+
+    this.testingStringControl.valueChanges
+      .pipe(takeUntil(this.unsubscribeAll$))
+      .subscribe((value) => this.dispatchAction(new UpdateTestingStringAction(value ?? '')));
+
+    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.extractionResult).subscribe((v) =>
+      this._isValid$.next(v?.isValid)
     );
   }
 
-  private validateExpression(control: AbstractControl): ValidationErrors | null {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const validator = (window as any)?.smusdi?.RegexToolsApi;
-    if (!validator) {
-      return null;
-    }
+  public get extractedPartNames$(): Observable<string[]> {
+    return this._extractedPartNames$.asObservable();
+  }
 
-    const validationResult: string = validator.ValidateStringPartsExtractor(JSON.stringify({ expression: control.value }));
-    if (!validationResult) {
-      return null;
-    }
+  public get canSubmit$(): Observable<boolean> {
+    return this._canSubmit$.asObservable();
+  }
 
-    const result: StringPartsExtractorValidationResult = JSON.parse(validationResult);
-    if (result.isValid || !result.errors['expression']) {
-      return null;
-    }
+  public get isValid$(): Observable<boolean | undefined> {
+    return this._isValid$.asObservable();
+  }
 
-    return {
-      regex: result.errors['expression'][0]
-    };
+  public ngAfterViewInit(): void {
+    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.expression)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.expressionControl.setValue(value, { emitEvent: false });
+      });
+
+    this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.expressionError).subscribe((value) => {
+      if (value) {
+        this.expressionControl.setErrors({ regex: value }, { emitEvent: false });
+      } else {
+        this.expressionControl.setErrors(null, { emitEvent: false });
+      }
+    });
+  }
+
+  public close(): void {
+    this.dispatchActionType(NgssmStringPartsExtractionActionType.closeStringPartsExtractorEditor);
+  }
+
+  public submit(): void {
+    this.dispatchActionType(NgssmStringPartsExtractionActionType.submitStringPartsExtractor);
   }
 }

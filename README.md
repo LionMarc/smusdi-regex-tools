@@ -9,3 +9,8 @@ To build the wasm:
 ```
  dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release
 ```
+
+> to build with multithread:
+>  - set to true the *WasmEnableThreads* property in *Smusdi.Wasm*
+>  - export a method that returns a *Task*
+ 

@@ -1,4 +1,7 @@
-﻿namespace Smusdi.RegexTools;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+
+namespace Smusdi.RegexTools;
 
 public sealed class ExtractedPart
 {
@@ -14,4 +17,18 @@ public sealed class ExtractedPart
     public ExtractedPartType Type { get; }
 
     public string? Format { get; }
+
+    public object ExtractPart(Match match)
+    {
+        var value = match.Groups[this.Name].Value;
+
+        return this.Type switch
+        {
+            ExtractedPartType.Text => value,
+            ExtractedPartType.Number => double.Parse(value, CultureInfo.InvariantCulture),
+            ExtractedPartType.Date => DateOnly.ParseExact(value, this.Format!),
+            ExtractedPartType.Time => TimeOnly.Parse(value),
+            _ => value,
+        };
+    }
 }

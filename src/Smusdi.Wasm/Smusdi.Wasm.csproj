@@ -8,7 +8,7 @@
 
     <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
     <WasmMainJSPath>smusdi.regextools.js</WasmMainJSPath>
-    <WasmEnableThreads>true</WasmEnableThreads>
+    <WasmEnableThreads>false</WasmEnableThreads>
 
     <!-- JSExport requires unsafe code -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

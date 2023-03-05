@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,7 +15,7 @@ import { NgssmStringPartsExtractorComponent, StringPartsExtractor } from 'ngssm-
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends NgSsmComponent {
-  public readonly extractorControl = new FormControl<StringPartsExtractor | undefined>({ expression: '^(?<date>\\d[8})_', parts: [] });
+  public readonly extractorControl = new FormControl<StringPartsExtractor | undefined>(undefined, Validators.required);
 
   constructor(store: Store, consoleAppender: ConsoleAppender) {
     super(store);

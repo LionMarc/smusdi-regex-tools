@@ -22,22 +22,7 @@ public static partial class RegexHelpers
 
     public static ICollection<string> GetDefinedGroupNames(string pattern)
     {
-        var regex = NamedGroupsFinder();
-        var names = new List<string>();
-        var matches = regex.Matches(pattern);
-        if (matches.Count == 0)
-        {
-            return names;
-        }
-
-        foreach (Match match in matches)
-        {
-            names.AddRange(match.Groups.Values.Where(g => g.Name == "name").Select(g => g.Value));
-        }
-
+        var names = new Regex(pattern).GetGroupNames().Where(n => !int.TryParse(n, out _)).ToList();
         return names;
     }
-
-    [GeneratedRegex("(\\(\\?\\<(?<name>[^\\>]*)\\>)")]
-    private static partial Regex NamedGroupsFinder();
 }

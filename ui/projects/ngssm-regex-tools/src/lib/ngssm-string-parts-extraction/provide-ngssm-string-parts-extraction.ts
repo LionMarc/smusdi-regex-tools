@@ -1,8 +1,13 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 
-import { stringPartsExtractorEditorEffectProvider } from './effects';
-import { stringPartsExtractorEditorReducerProvider } from './reducers';
+import { stringPartsExtractionEffectProvider, stringPartsExtractorEditorEffectProvider } from './effects';
+import { stringPartsExtractorEditorReducerProvider, stringPartsExtractorTestingReducerProvider } from './reducers';
 
 export const provideNgssmStringPartsExtraction = (): EnvironmentProviders => {
-  return makeEnvironmentProviders([stringPartsExtractorEditorEffectProvider, stringPartsExtractorEditorReducerProvider]);
+  return makeEnvironmentProviders([
+    stringPartsExtractorEditorEffectProvider,
+    stringPartsExtractorEditorReducerProvider,
+    stringPartsExtractorTestingReducerProvider,
+    stringPartsExtractionEffectProvider
+  ]);
 };

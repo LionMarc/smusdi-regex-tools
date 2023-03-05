@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { NgSsmComponent, Store } from 'ngssm-store';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { noop, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, noop, Observable, Subject } from 'rxjs';
 import { StringPartsExtractor } from '../../model';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { EditStringPartsExtractorAction } from '../../actions';
+import { selectNgssmStringPartsExtractionState } from '../../state';
 
 @Component({
   selector: 'ngssm-string-parts-extractor',
@@ -23,10 +24,21 @@ export class NgssmStringPartsExtractorComponent
   implements MatFormFieldControl<StringPartsExtractor>, ControlValueAccessor
 {
   private static nextId = 0;
+  private readonly _expression$ = new BehaviorSubject<string | undefined>(undefined);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private onChangeCallback: (_: any) => void = noop;
   private _required = false;
   private _disabled = false;
+
+  @HostBinding('id') public id = `parts-extractor-${NgssmStringPartsExtractorComponent.nextId++}`;
+  public controlType = 'ngssm-string-parts-extractor';
+  public placeholder = '';
+  public focused = false;
+  public stateChanges = new Subject<void>();
+  public value: StringPartsExtractor | null = null;
+  public autofilled?: boolean | undefined;
+  public userAriaDescribedBy?: string | undefined;
 
   constructor(store: Store, @Optional() @Self() public ngControl: NgControl) {
     super(store);
@@ -37,16 +49,16 @@ export class NgssmStringPartsExtractorComponent
       // the providers) to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
     }
-  }
 
-  @HostBinding('id') public id = `parts-extractor-${NgssmStringPartsExtractorComponent.nextId++}`;
-  public controlType = 'ngssm-string-parts-extractor';
-  public placeholder = '';
-  public focused = false;
-  public stateChanges = new Subject<void>();
-  public value: StringPartsExtractor | null = null;
-  public autofilled?: boolean | undefined;
-  public userAriaDescribedBy?: string | undefined;
+    combineLatest([
+      this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.controlId),
+      this.watch((s) => selectNgssmStringPartsExtractionState(s).stringPartsExtractorEditor.extractor)
+    ]).subscribe((values) => {
+      if (values[0] === this.id && values[1]) {
+        this.updateValue(values[1]);
+      }
+    });
+  }
 
   public get empty(): boolean {
     return this.value === null;
@@ -80,25 +92,34 @@ export class NgssmStringPartsExtractorComponent
     return this.ngControl?.invalid ?? false;
   }
 
+  public get expression$(): Observable<string | undefined> {
+    return this._expression$.asObservable();
+  }
+
   public writeValue(obj: StringPartsExtractor | null | undefined): void {
-    console.log('writeValue', obj);
     this.updateValue(obj ?? null);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public registerOnChange(fn: any): void {
     this.onChangeCallback = fn;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   public registerOnTouched(fn: any): void {
     // nothing to do for now.
   }
 
-  public setDisabledState?(isDisabled: boolean): void {}
+  public setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public setDescribedByIds(ids: string[]): void {
     // nothing to do for now
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onContainerClick(event: MouseEvent): void {
     this.dispatchAction(new EditStringPartsExtractorAction(this.id, this.value ?? undefined));
   }
@@ -106,6 +127,7 @@ export class NgssmStringPartsExtractorComponent
   private updateValue(extractor: StringPartsExtractor | null): void {
     this.value = extractor;
     this.stateChanges.next();
+    this._expression$.next(this.value?.expression);
     this.onChangeCallback(this.value);
   }
 }
