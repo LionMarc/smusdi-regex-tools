@@ -1,0 +1,40 @@
+name: .NET
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_version:
+        required: true
+        type: string
+        description: Minor.Patch, Major is set according to targetted .NET or angular version
+
+jobs:
+  call_shared_build:
+    uses: ./.github/workflows/shared_build.yml
+    with:
+      dotnet_package_version: ${{ inputs.package_version }}
+      angular_package_version: ${{ inputs.package_version }}
+
+  publish_dotnet:
+    name: Publish .NET package
+    needs: call_shared_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: smusdi-regextools
+          path: ./nuget-packages
+      - run: ls -lrt ./nuget-packages
+      - run: ls -lrt .
+
+  publish_angular:
+    name: Publish angular package
+    needs: call_shared_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: ngssm-regex-tools
+          path: ./angular-packages
+      - run: ls -lrt ./angular-packages
+      - run: ls -lrt .
