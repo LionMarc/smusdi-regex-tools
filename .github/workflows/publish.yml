@@ -7,13 +7,23 @@ on:
         required: true
         type: string
         description: Minor.Patch, Major is set according to targetted .NET or angular version
+  release:
+    types: [published]
 
 jobs:
-  call_shared_build:
+  build_branch:
+    if: inputs.package_version
     uses: ./.github/workflows/shared_build.yml
     with:
       dotnet_package_version: ${{ inputs.package_version }}
       angular_package_version: ${{ inputs.package_version }}
+
+  build_release:
+    if: github.event.release.tag_name
+    uses: ./.github/workflows/shared_build.yml
+    with:
+      dotnet_package_version: ${{ github.event.release.tag_name }}
+      angular_package_version: ${{ github.event.release.tag_name }}
 
   publish_dotnet:
     name: Publish .NET package
