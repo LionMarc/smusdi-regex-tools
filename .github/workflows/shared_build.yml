@@ -69,6 +69,8 @@ jobs:
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
       with:
+        header: .NET
+        message: .NET coverage
         recreate: true
         path: dotnet-code-coverage-results.md
   
@@ -121,6 +123,8 @@ jobs:
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
       with:
+        header: angular
+        message: angular coverage
         recreate: true
         path: angular-code-coverage-results.md
 
