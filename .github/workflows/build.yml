@@ -1,0 +1,41 @@
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_dotnet:
+    name: Build .NET projects
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 7.0.x
+    - name: Install wasm tools
+      run: dotnet workload install wasm-tools
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    - name: Test
+      run: dotnet test -c Release --no-build --verbosity normal --logger "trx;LogFileName=../../../results/test-results.trx"
+    - name: Test packing
+      run: dotnet pack --no-build -c Release -p:PackageVersion=7.0.0.1 -o publish
+    - name: Cleanup wasm
+      run: rm -rf src/Smusdi.Wasm/bin && rm -rf src/Smusdi.Wasm/obj
+    - name: Building wasm
+      run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: .NET Tests
+        path: results/test-results.trx
+        reporter: dotnet-trx
