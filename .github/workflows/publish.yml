@@ -14,17 +14,20 @@ jobs:
   setup_env:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: setup_version
+        id: setup_version
+        run: |
           if ( ${{ inputs.package_version }} ); 
-          then echo "version=${{ inputs.package_version }}"; 
-          else echo "version=${{ github.event.release.tag_name }}"
-          fi >> $GITHUB_ENV
+          then echo "VERSION=${{ inputs.package_version }}"; 
+          else echo "VERSION=${{ github.event.release.tag_name }}"
+          fi >> $GITHUB_OUTPUT
       
   call_shared_build:
+    needs: setup_env
     uses: ./.github/workflows/shared_build.yml
     with:
-      dotnet_package_version: ${{ env.version }}
-      angular_package_version: ${{ env.version }}
+      dotnet_package_version: ${{ steps.setup_version.outputs.VERSION }}
+      angular_package_version: ${{ steps.setup_version.outputs.VERSION }}
 
   publish_dotnet:
     name: Publish .NET package
