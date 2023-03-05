@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,12 @@ import { BehaviorSubject, Observable, startWith, Subscription, takeUntil } from 
 import { NgSsmComponent, Store } from 'ngssm-store';
 
 import { selectNgssmStringPartsExtractionState } from '../../state';
-import { ExtractedPartType, getExtractedPartTypes } from '../../model';
+import {
+  ExtractedPartType,
+  getDefaultNgssmRegexToolsDateFormats,
+  getExtractedPartTypes,
+  NGSSM_REGEX_TOOLS_DATE_FORMATS
+} from '../../model';
 import { UpdateExtractedPartAction } from '../../actions';
 
 @Component({
@@ -24,7 +29,7 @@ import { UpdateExtractedPartAction } from '../../actions';
 export class NgssmExtractedPartComponent extends NgSsmComponent {
   private readonly _filteredFormats$ = new BehaviorSubject<string[]>([]);
 
-  private readonly dateFormats = ['yyyy-MM-dd', 'dd/MM/yyyy', 'MM/dd/yyyy'];
+  private readonly dateFormats: string[];
 
   private subscription: Subscription | undefined;
   private _partName = '';
@@ -41,8 +46,10 @@ export class NgssmExtractedPartComponent extends NgSsmComponent {
     format: this.formatControl
   });
 
-  constructor(store: Store) {
+  constructor(store: Store, @Inject(NGSSM_REGEX_TOOLS_DATE_FORMATS) @Optional() customDateFormats: string[]) {
     super(store);
+
+    this.dateFormats = customDateFormats ?? getDefaultNgssmRegexToolsDateFormats();
 
     this.formatControl.valueChanges.pipe(startWith(''), takeUntil(this.unsubscribeAll$)).subscribe((value) => {
       this._filteredFormats$.next(this.dateFormats.filter((f) => f.startsWith(value ?? '')));
