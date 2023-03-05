@@ -7,72 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build_dotnet:
-    name: Build .NET projects
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 7.0.x
-    - name: Install wasm tools
-      run: dotnet workload install wasm-tools
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build -c Release --no-restore -p:Version=7.0.0.1
-    - name: Test
-      run: dotnet test -c Release --no-build --verbosity normal --logger "trx;LogFileName=../../../results/test-results.trx"
-    - name: Test packing
-      run: dotnet pack --no-build -c Release -p:PackageVersion=7.0.0.1 -o publish
-    - name: Cleanup wasm
-      run: rm -rf src/Smusdi.Wasm/bin && rm -rf src/Smusdi.Wasm/obj
-    - name: Building wasm
-      run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release -p:Version=7.0.0.1
-    - uses: actions/upload-artifact@v3
-      with:
-        name: smusdi-wasm
-        path: src/Smusdi.Wasm/bin/Release/net7.0/browser-wasm/AppBundle
-        retention-days: 2
-    - uses: actions/upload-artifact@v3
-      with:
-        name: smusdi-regextools
-        path: publish/Smusdi.RegexTools.7.0.0.1.nupkg
-        retention-days: 2
-  
-  build_angular:
-    name: Build angular packages
-    needs: build_dotnet
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: smusdi-wasm
-        path: ui/projects/ngssm-regex-tools/assets
-    - run: ls -lrt ui/projects/ngssm-regex-tools/assets
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '16.x'
-        cache: 'npm'
-        cache-dependency-path: 'ui/package-lock.json'
-    - run: cd ui && npm ci
-    - run: cd ui && npm run build:ci
-    - run: cd ui && npm run build
-    - run: cd ui && npm run test:ci
-    - run: |
-        cd ui/dist/ngssm-regex-tools
-        npm version "15.0.0"
-        npm pack
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ngssm-regex-tools
-        path: ui/dist/ngssm-regex-tools/ngssm-regex-tools-15.0.0.tgz
-        retention-days: 2
-
-
+  call_shared_build:
+    uses: ./.github/workflows/shared_build.yml
+    with:
+      dotnet_package_version: 0.0.1
+      angular_package_version: 0.0
