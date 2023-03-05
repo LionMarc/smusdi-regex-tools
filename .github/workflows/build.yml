@@ -23,7 +23,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c Release --no-restore
+      run: dotnet build -c Release --no-restore -p:Version=7.0.0.1
     - name: Test
       run: dotnet test -c Release --no-build --verbosity normal --logger "trx;LogFileName=../../../results/test-results.trx"
     - name: Test packing
@@ -31,11 +31,16 @@ jobs:
     - name: Cleanup wasm
       run: rm -rf src/Smusdi.Wasm/bin && rm -rf src/Smusdi.Wasm/obj
     - name: Building wasm
-      run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release
+      run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release -p:Version=7.0.0.1
     - uses: actions/upload-artifact@v3
       with:
         name: smusdi-wasm
         path: src/Smusdi.Wasm/bin/Release/net7.0/browser-wasm/AppBundle
+        retention-days: 2
+    - uses: actions/upload-artifact@v3
+      with:
+        name: smusdi-regextools
+        path: publish/Smusdi.RegexTools.7.0.0.1.nupkg
         retention-days: 2
   
   build_angular:
@@ -60,4 +65,14 @@ jobs:
     - run: cd ui && npm run build:ci
     - run: cd ui && npm run build
     - run: cd ui && npm run test:ci
+    - run: |
+        cd ui/dist/ngssm-regex-tools
+        npm version "15.0.0"
+        npm pack
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ngssm-regex-tools
+        path: ui/dist/ngssm-regex-tools/ngssm-regex-tools-15.0.0.tgz
+        retention-days: 2
+
 
