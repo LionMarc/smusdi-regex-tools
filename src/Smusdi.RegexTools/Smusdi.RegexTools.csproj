@@ -2,8 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>true</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Smusdi.RegexTools</RootNamespace>
+    <PackageId>Smusdi.RegexTools</PackageId>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    <Authors>LION Marc</Authors>
+    <PackageDescription>Some regular expression tools to be used in .NET service and in browser.</PackageDescription>
+    <RepositoryUrl>https://github.com/LionMarc/smusdi-regex-tools</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
