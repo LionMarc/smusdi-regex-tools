@@ -11,19 +11,20 @@ on:
     types: [published]
 
 jobs:
-  build_branch:
-    if: inputs.package_version
+  setup_env:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if ( ${{ inputs.package_version }} ); 
+          then echo "version=${{ inputs.package_version }}"; 
+          else echo "version=${{ github.event.release.tag_name }}"
+          fi >> $GITHUB_ENV
+      
+  call_shared_build:
     uses: ./.github/workflows/shared_build.yml
     with:
-      dotnet_package_version: ${{ inputs.package_version }}
-      angular_package_version: ${{ inputs.package_version }}
-
-  build_release:
-    if: github.event.release.tag_name
-    uses: ./.github/workflows/shared_build.yml
-    with:
-      dotnet_package_version: ${{ github.event.release.tag_name }}
-      angular_package_version: ${{ github.event.release.tag_name }}
+      dotnet_package_version: ${{ env.version }}
+      angular_package_version: ${{ env.version }}
 
   publish_dotnet:
     name: Publish .NET package
