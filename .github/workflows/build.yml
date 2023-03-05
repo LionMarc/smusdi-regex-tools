@@ -32,6 +32,11 @@ jobs:
       run: rm -rf src/Smusdi.Wasm/bin && rm -rf src/Smusdi.Wasm/obj
     - name: Building wasm
       run: dotnet publish src/Smusdi.Wasm/Smusdi.Wasm.csproj --configuration Release
+    - uses: actions/upload-artifact@v3
+      with:
+        name: smusdi-wasm
+        path: src/Smusdi.Wasm/bin/Release/net7.0/browser-wasm/AppBundle
+        retention-days: 2
   
   build_angular:
     name: Build angular packages
@@ -41,6 +46,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: smusdi-wasm
+        path: ui/projects/ngssm-regex-tools/assets
+    - run: ls -lrt ui/projects/ngssm-regex-tools/assets
     - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
