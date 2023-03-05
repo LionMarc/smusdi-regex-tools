@@ -14,8 +14,8 @@
 
 <mat-form-field *ngIf="typeControl.value === extractedPartType.date">
     <mat-label>Format</mat-label>
-    <input type="text" matInput [formControl]="formatControl" [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
+    <input type="text" matInput [formControl]="formatControl" [matAutocomplete]="auto" id="formatInput">
+    <mat-autocomplete #auto="matAutocomplete" id="formatAutocomplete">
         <mat-option *ngFor="let format of filteredFormats$ | async" [value]="format">
             {{format}}
         </mat-option>
