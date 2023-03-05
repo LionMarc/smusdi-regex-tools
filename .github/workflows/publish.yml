@@ -19,9 +19,11 @@ jobs:
       - name: setup_version
         id: setup_version
         run: |
-          if ( "${{ inputs.package_version }}" != "" ); 
-          then echo "VERSION=${{ inputs.package_version }}"; 
-          else echo "VERSION=${{ github.event.release.tag_name }}"
+          if [[ "${{ inputs.package_version }}" != "" ]] 
+          then 
+            echo "VERSION=${{ inputs.package_version }}" 
+          else 
+            echo "VERSION=${{ github.event.release.tag_name }}"
           fi >> $GITHUB_OUTPUT
       
   call_shared_build:
