@@ -1,5 +1,10 @@
 # Smusdi.RegexTools
 
+[![license](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+![build workflow](https://github.com/LionMarc/smusdi-regex-tools/actions/workflows/build.yml/badge.svg)
+[![npm version](https://img.shields.io/npm/v/ngssm-regex-tools.svg)](https://www.npmjs.com/package/ngssm-regex-tools)
+[![NuGet stable version](https://badgen.net/nuget/v/Smusdi.RegexTools)](https://nuget.org/packages/Smusdi.RegexTools)
+
 Some C# utilities to process regular expressions.
 
 The main purpose is to allow compiling the code in wasm to be used in an *angular* application as well as in a *C#* service.
