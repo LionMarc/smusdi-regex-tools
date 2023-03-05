@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: cd ./angular-packages && npm publish
+      - run: cd ./angular-packages && npm publish *.tgz
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

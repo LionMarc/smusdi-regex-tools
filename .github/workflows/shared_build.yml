@@ -69,6 +69,7 @@ jobs:
     - run: cd ui && npm run build:ci
     - run: cd ui && npm run build
     - run: cd ui && npm run test:ci
+    - run: cp README.md ui/dist/ngssm-regex-tools/.
     - run: |
         cd ui/dist/ngssm-regex-tools
         npm version 15.${{ inputs.angular_package_version }}
