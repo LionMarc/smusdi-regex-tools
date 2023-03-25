@@ -3,3 +3,4 @@
  */
 
 export * from './lib/ngssm-string-parts-extraction/public-api';
+export * from './lib/ngssm-regex/ngssm-regex.component';

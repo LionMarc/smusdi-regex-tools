@@ -17,4 +17,28 @@
       {{extractorControl.value | json}}
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="flex-column-stretch regex-demo">
+    <mat-card-header>
+      <mat-card-title>
+        Regex control demo
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="flex-column-stretch fxFlex">
+      <ngssm-regex [formControl]="regexControl" [required]="(regexRequired$ | async) ?? false">
+        Enter a valid regular expression
+      </ngssm-regex>
+
+      <div>
+        REGEX: {{regexControl.value}}
+      </div>
+      <div>
+        STATUS: {{regexControl.status}}
+      </div>
+
+      <mat-checkbox (change)="setRegexControlRequired($event)">Required ?</mat-checkbox>
+      <mat-checkbox (change)="setRegexControlDisabled($event)">Disabled ?</mat-checkbox>
+
+    </mat-card-content>
+  </mat-card>
 </div>

@@ -50,4 +50,10 @@ public partial class RegexToolsApi
         var groups = RegexHelpers.GetDefinedGroupNames(input);
         return groups.ToArray();
     }
+
+    [JSExport]
+    public static bool IsMatch(string pattern, string input)
+    {
+        return RegexHelpers.IsMatch(pattern, input);
+    }
 }

@@ -8,6 +8,7 @@ interface RegexToolsApi {
   GetGroupNames(expression: string): string[];
   ValidateRegex(expression: string): string;
   ExtractParts(extractor: string, input: string): string;
+  IsMatch(expression: string, input: string): boolean;
 }
 
 @Injectable({
@@ -61,6 +62,10 @@ export class RegexToolsService {
     return JSON.parse(result);
   }
 
+  public isMatch(expression: string, input: string): boolean {
+    return this.getRegexToolsApi()?.IsMatch(expression, input) ?? false;
+  }
+
   public extractParts(extractor: StringPartsExtractor, input: string): StringPartsExtractionResult {
     const result = this.getRegexToolsApi()?.ExtractParts(JSON.stringify(extractor), input);
     this.logger.information(`Extracting parts from '${input}' with '${extractor}': ${result}`);
@@ -78,6 +83,6 @@ export class RegexToolsService {
 
   private getRegexToolsApi(): RegexToolsApi | undefined {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (window as any)?.smusdi?.RegexToolsApi;
+    return (window as any)?.dotnet?.smusdi?.RegexToolsApi;
   }
 }
