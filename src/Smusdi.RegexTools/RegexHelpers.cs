@@ -20,6 +20,18 @@ public static partial class RegexHelpers
         }
     }
 
+    public static bool IsMatch(string pattern, string input)
+    {
+        try
+        {
+            return Regex.IsMatch(input, pattern);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
     public static ICollection<string> GetDefinedGroupNames(string pattern)
     {
         var names = new Regex(pattern).GetGroupNames().Where(n => !int.TryParse(n, out _)).ToList();

@@ -13,4 +13,4 @@ if (!window.dotnet) {
     window.dotnet = {};
 }
 
-window.smusdi = exports.Smusdi.Wasm;
+window.dotnet.smusdi = exports.Smusdi.Wasm;
