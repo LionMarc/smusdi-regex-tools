@@ -88,8 +88,10 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
   }
 
   public writeValue(obj: string | null | undefined): void {
-    this.valueControl.setValue(obj, { emitEvent: false });
-    this.onChangeCallback(obj);
+    if (this.valueControl.value !== obj) {
+      this.valueControl.setValue(obj, { emitEvent: false });
+      this.onChangeCallback(obj);
+    }
   }
 
   public registerOnChange(fn: (_: string | null | undefined) => void): void {
