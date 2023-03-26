@@ -33,8 +33,8 @@ To build the wasm:
     "assets": [
         {
         "glob": "**/*",
-        "input": "node_modules/ngssm-toolkit/assets",
-        "output": "./assets/"
+        "input": "node_modules/ngssm-regex-tools/assets",
+        "output": "./assets/smusdi/"
         },
         ...
     ],
