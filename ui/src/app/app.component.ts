@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 
 import { ConsoleAppender, NgSsmComponent, Store } from 'ngssm-store';
 import { NgssmRegexComponent, NgssmStringPartsExtractorComponent, StringPartsExtractor } from 'ngssm-regex-tools';
@@ -28,6 +28,7 @@ import { NgssmRegexComponent, NgssmStringPartsExtractorComponent, StringPartsExt
 })
 export class AppComponent extends NgSsmComponent {
   private readonly _regexRequired$ = new BehaviorSubject<boolean>(false);
+  private readonly _regexValue = new BehaviorSubject<string | null | undefined>('^Test$');
 
   public readonly extractorControl = new FormControl<StringPartsExtractor | undefined>(undefined, Validators.required);
 
@@ -39,6 +40,16 @@ export class AppComponent extends NgSsmComponent {
 
     this.extractorControl.valueChanges.subscribe((v) => {
       console.log('AppComponent - new extractor', v);
+    });
+
+    this.regexControl.valueChanges.pipe(takeUntil(this.unsubscribeAll$)).subscribe((v) => {
+      console.log('regexControl.valueChanges', v);
+      setTimeout(() => this._regexValue.next(v));
+    });
+
+    this._regexValue.pipe(takeUntil(this.unsubscribeAll$)).subscribe((v) => {
+      console.log('state', v);
+      this.regexControl.reset(v, { emitEvent: false });
     });
   }
 

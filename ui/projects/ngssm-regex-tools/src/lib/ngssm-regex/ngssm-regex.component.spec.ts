@@ -82,4 +82,20 @@ describe('NgssmRegexComponent', () => {
 
     expect(await element.isDisabled()).toBeFalse();
   });
+
+  it(`should not notify change when input form control is reset to the same value as the one in the control`, async () => {
+    component.regexControl.setValue('^test.*$');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    let called = false;
+    component.regexControl.valueChanges.subscribe(() => (called = true));
+
+    component.regexControl.reset('^test.*$', { emitEvent: false });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(called).toBeFalse();
+  });
 });
