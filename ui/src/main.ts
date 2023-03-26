@@ -1,5 +1,6 @@
 import { importProvidersFrom } from '@angular/core';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
@@ -15,6 +16,10 @@ bootstrapApplication(AppComponent, {
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: { position: { top: '40px' }, closeOnNavigation: false }
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline' }
     },
     useDefaultErrorStateMatcher,
     provideNgssmStringPartsExtraction(),
