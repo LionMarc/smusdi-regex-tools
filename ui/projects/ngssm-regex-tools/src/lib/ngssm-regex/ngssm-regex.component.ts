@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, ElementRef, Optional, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -15,12 +15,13 @@ import { MatInputModule } from '@angular/material/input';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { MatIconModule } from '@angular/material/icon';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { BehaviorSubject, Observable, debounceTime, takeUntil } from 'rxjs';
 
 import { NgSsmComponent, Store } from 'ngssm-store';
 
 import { RegexToolsService } from '../ngssm-string-parts-extraction/services';
-import { MatButtonModule } from '@angular/material/button';
+import { NGSSM_REGEX_TOOLS_CONFIG, NgssmRegexToolsConfig, getDefaultNgssmRegexToolsConfig } from '../ngssm-regex-tools-tools-config';
 
 export const noop = () => {
   // Do nothing
@@ -49,6 +50,7 @@ export const noop = () => {
 export class NgssmRegexComponent extends NgSsmComponent implements ControlValueAccessor, Validator {
   private readonly _testingControlOpen$ = new BehaviorSubject<boolean>(false);
   private readonly _isMatch$ = new BehaviorSubject<boolean | null>(null);
+  private readonly regexConfig: NgssmRegexToolsConfig;
 
   private onChangeCallback: (_: string | null | undefined) => void = noop;
   private onTouchedCallback: (_: string | null | undefined) => void = noop;
@@ -58,15 +60,26 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
   public readonly valueControl = new FormControl<string | null | undefined>(null);
   public readonly testingStringControl = new FormControl<string>('');
 
-  constructor(store: Store, private regexToolsService: RegexToolsService, public elementRef: ElementRef) {
+  constructor(
+    store: Store,
+    private regexToolsService: RegexToolsService,
+    public elementRef: ElementRef,
+    @Inject(NGSSM_REGEX_TOOLS_CONFIG) @Optional() config?: NgssmRegexToolsConfig
+  ) {
     super(store);
 
-    this.valueControl.valueChanges.pipe(takeUntil(this.unsubscribeAll$)).subscribe((value) => {
-      this.onTouchedCallback(value);
-      this.onChangeCallback(value);
-    });
+    this.regexConfig = config ?? getDefaultNgssmRegexToolsConfig();
 
-    this.testingStringControl.valueChanges.pipe(takeUntil(this.unsubscribeAll$)).subscribe(() => this.onValidationChange());
+    this.valueControl.valueChanges
+      .pipe(debounceTime(this.regexConfig.regexControlDebounceTimeInMs), takeUntil(this.unsubscribeAll$))
+      .subscribe((value) => {
+        this.onTouchedCallback(value);
+        this.onChangeCallback(value);
+      });
+
+    this.testingStringControl.valueChanges
+      .pipe(debounceTime(this.regexConfig.regexControlDebounceTimeInMs), takeUntil(this.unsubscribeAll$))
+      .subscribe(() => this.onValidationChange());
   }
 
   @Input()
