@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, ElementRef, Optional, Inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, ElementRef, Optional, Inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -64,6 +64,7 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
     store: Store,
     private regexToolsService: RegexToolsService,
     public elementRef: ElementRef,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(NGSSM_REGEX_TOOLS_CONFIG) @Optional() config?: NgssmRegexToolsConfig
   ) {
     super(store);
@@ -75,6 +76,7 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
       .subscribe((value) => {
         this.onTouchedCallback(value);
         this.onChangeCallback(value);
+        this.changeDetectorRef.markForCheck();
       });
 
     this.testingStringControl.valueChanges

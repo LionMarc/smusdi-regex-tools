@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 
 import { ConsoleAppender, NgSsmComponent, Store } from 'ngssm-store';
@@ -20,6 +21,7 @@ import { NgssmRegexComponent, NgssmStringPartsExtractorComponent, StringPartsExt
     MatFormFieldModule,
     MatCardModule,
     MatCheckboxModule,
+    MatButtonModule,
     NgssmStringPartsExtractorComponent,
     NgssmRegexComponent
   ],
