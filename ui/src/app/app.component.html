@@ -38,6 +38,9 @@
 
       <mat-checkbox (change)="setRegexControlRequired($event)">Required ?</mat-checkbox>
       <mat-checkbox (change)="setRegexControlDisabled($event)">Disabled ?</mat-checkbox>
+      <button mat-stroked-button [disabled]="regexControl.invalid" color="primary">
+        Submit
+      </button>
 
     </mat-card-content>
   </mat-card>
