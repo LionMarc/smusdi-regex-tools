@@ -4,7 +4,8 @@
     </mat-label>
     <input matInput [formControl]="valueControl" [required]="required">
     <button matSuffix mat-icon-button (click)="$event.stopPropagation(); toggleTestingControlVisibility()"
-        [disabled]="valueControl.disabled" id="toggleButton">
+        [disabled]="valueControl.disabled" id="toggleButton"
+        [matTooltip]="(testingControlOpen$ | async) === false ? 'Open panel to enter a string to be used to check the regular expression.' : 'Close panel'">
         <mat-icon class="fa-solid"
             [ngClass]="{'fa-angles-up': (testingControlOpen$ | async) === true, 'fa-angles-down': (testingControlOpen$ | async) === false}">
         </mat-icon>

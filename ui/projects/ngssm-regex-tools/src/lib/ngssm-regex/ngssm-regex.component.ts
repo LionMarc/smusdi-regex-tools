@@ -16,6 +16,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { MatIconModule } from '@angular/material/icon';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BehaviorSubject, Observable, debounceTime, takeUntil } from 'rxjs';
 
 import { NgSsmComponent, Store } from 'ngssm-store';
@@ -30,7 +31,16 @@ export const noop = () => {
 @Component({
   selector: 'ngssm-regex',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, OverlayModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    OverlayModule
+  ],
   templateUrl: './ngssm-regex.component.html',
   styleUrls: ['./ngssm-regex.component.scss'],
   providers: [
@@ -56,6 +66,7 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
   private onTouchedCallback: (_: string | null | undefined) => void = noop;
   private onValidationChange: () => void = noop;
   private _required = false;
+  private lastWrite: string | null = null;
 
   public readonly valueControl = new FormControl<string | null | undefined>(null);
   public readonly testingStringControl = new FormControl<string>('');
@@ -74,9 +85,13 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
     this.valueControl.valueChanges
       .pipe(debounceTime(this.regexConfig.regexControlDebounceTimeInMs), takeUntil(this.unsubscribeAll$))
       .subscribe((value) => {
-        this.onTouchedCallback(value);
-        this.onChangeCallback(value);
+        if (value !== this.lastWrite) {
+          this.onTouchedCallback(value);
+          this.onChangeCallback(value);
+        }
+
         this.changeDetectorRef.markForCheck();
+        this.lastWrite = null;
       });
 
     this.testingStringControl.valueChanges
@@ -104,8 +119,9 @@ export class NgssmRegexComponent extends NgSsmComponent implements ControlValueA
 
   public writeValue(obj: string | null | undefined): void {
     if (this.valueControl.value !== obj) {
+      this.lastWrite = obj ?? null;
       this.valueControl.setValue(obj, { emitEvent: false });
-      this.onChangeCallback(obj);
+      this.changeDetectorRef.markForCheck();
     }
   }
 

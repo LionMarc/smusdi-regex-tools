@@ -30,7 +30,7 @@ import { NgssmRegexComponent, NgssmStringPartsExtractorComponent, StringPartsExt
 })
 export class AppComponent extends NgSsmComponent {
   private readonly _regexRequired$ = new BehaviorSubject<boolean>(false);
-  private readonly _regexValue = new BehaviorSubject<string | null | undefined>('^Test$');
+  private readonly _regexValue = new BehaviorSubject<string | null | undefined>('^Test$**');
 
   public readonly extractorControl = new FormControl<StringPartsExtractor | undefined>(undefined, Validators.required);
 
@@ -49,10 +49,15 @@ export class AppComponent extends NgSsmComponent {
       setTimeout(() => this._regexValue.next(v));
     });
 
-    this._regexValue.pipe(takeUntil(this.unsubscribeAll$)).subscribe((v) => {
-      console.log('state', v);
-      this.regexControl.reset(v, { emitEvent: false });
-    });
+    // this._regexValue.pipe(takeUntil(this.unsubscribeAll$)).subscribe((v) => {
+    //   console.log('state', v);
+    //   this.regexControl.reset(v, { emitEvent: false });
+    // });
+
+    setTimeout(() => {
+      console.log('SETTING VALUE', this._regexValue.getValue());
+      this.regexControl.setValue(this._regexValue.getValue(), { emitEvent: false });
+    }, 5000);
   }
 
   public get regexRequired$(): Observable<boolean> {
