@@ -48,22 +48,3 @@ jobs:
           dotnet-version: 7.0.x
       - name: Publish
         run: dotnet nuget push ./nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_ORG_TOKEN }} --source "https://api.nuget.org/v3/index.json"
-
-  publish_angular:
-    name: Publish angular package
-    needs: call_shared_build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: ngssm-regex-tools
-          path: ./angular-packages
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-      - run: cd ./angular-packages && npm publish *.tgz
-        shell: bash
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
