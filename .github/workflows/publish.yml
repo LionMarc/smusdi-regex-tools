@@ -31,7 +31,6 @@ jobs:
     uses: ./.github/workflows/shared_build.yml
     with:
       dotnet_package_version: ${{ needs.setup_env.outputs.release_version }}
-      angular_package_version: ${{ needs.setup_env.outputs.release_version }}
 
   publish_dotnet:
     name: Publish .NET package
