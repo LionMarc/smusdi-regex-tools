@@ -2,7 +2,7 @@
 
 namespace Smusdi.RegexTools;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ExtractedPartType>))]
 public enum ExtractedPartType
 {
     Text,
