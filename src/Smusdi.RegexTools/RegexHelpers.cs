@@ -3,7 +3,7 @@
 namespace Smusdi.RegexTools;
 
 /// <summary>
-/// Some helpers to check or to process regular expressions
+/// Some helpers to check or to process regular expressions.
 /// </summary>
 public static partial class RegexHelpers
 {

@@ -26,8 +26,8 @@ public sealed class ExtractedPart
         {
             ExtractedPartType.Text => value,
             ExtractedPartType.Number => double.Parse(value, CultureInfo.InvariantCulture),
-            ExtractedPartType.Date => DateOnly.ParseExact(value, this.Format!),
-            ExtractedPartType.Time => TimeOnly.Parse(value),
+            ExtractedPartType.Date => DateOnly.ParseExact(value, this.Format!, CultureInfo.InvariantCulture),
+            ExtractedPartType.Time => TimeOnly.Parse(value, CultureInfo.InvariantCulture),
             _ => value,
         };
     }
