@@ -20,11 +20,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -33,7 +33,7 @@ jobs:
       run: dotnet test -c Release --no-build --verbosity normal --logger "trx;LogFileName=../../../results/test-results.trx" --collect:"XPlat Code Coverage" --results-directory ./coverage
     - name: Test packing
       run: dotnet pack --no-build -c Release -p:PackageVersion=${{ inputs.dotnet_package_version }} -o publish
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: smusdi-regextools
         path: publish/Smusdi.RegexTools.${{ inputs.dotnet_package_version }}.nupkg
