@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{30A73C49
 	ProjectSection(SolutionItems) = preProject
 		specs\.runsettings = specs\.runsettings
 		specs\Directory.Build.props = specs\Directory.Build.props
-		specs\specflow.json = specs\specflow.json
+		specs\reqnroll.json = specs\reqnroll.json
 		specs\xunit.runner.json = specs\xunit.runner.json
 	EndProjectSection
 EndProject
