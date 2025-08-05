@@ -9,18 +9,18 @@ public sealed class StringPartsExtractorValidator
 
     private readonly List<Action<StringPartsExtractor, StringPartsExtractorValidationResult>> validators;
 
-    private readonly List<string> extractedGroupNames = new();
+    private readonly List<string> extractedGroupNames = [];
 
     public StringPartsExtractorValidator()
     {
-        this.validators = new()
-        {
+        this.validators =
+        [
             MustNotBeEmpty,
             MustBeValidRegex,
             this.MustHaveDefinedGroupNames,
             this.MustDeclaredPartsBeSameAsDefinedOnes,
             MustEachDefinedPartBeValid,
-        };
+        ];
     }
 
     public StringPartsExtractorValidationResult Validate(StringPartsExtractor extractor)
@@ -86,11 +86,7 @@ public sealed class StringPartsExtractorValidator
         var notSet = new List<string>();
         foreach (var found in this.extractedGroupNames)
         {
-            if (declaredNames.Contains(found))
-            {
-                declaredNames.Remove(found);
-            }
-            else
+            if (!declaredNames.Remove(found))
             {
                 notSet.Add(found);
             }
