@@ -10,10 +10,11 @@
     </PackageReference>
     <PackageReference Include="xunit"/>
     <PackageReference Include="xunit.runner.visualstudio"/>
-    <PackageReference Include="SpecFlow.xUnit"/>
-    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin"/>
+    <PackageReference Include="Reqnroll.xUnit"/>
+    <PackageReference Include="Reqnroll"/>
+    <PackageReference Include="Reqnroll.Tools.MsBuild.Generation"/>
     <PackageReference Include="JunitXml.TestLogger"/>
-    <PackageReference Include="FluentAssertions"/>
+    <PackageReference Include="AwesomeAssertions"/>
     <PackageReference Include="SystemTextJson.JsonDiffPatch"/>
   </ItemGroup>
 
@@ -22,8 +23,8 @@
              Link="xunit.runner.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\specflow.json"
-         Link="specflow.json">
+    <Content Include="$(MSBuildThisFileDirectory)\reqnroll.json"
+         Link="reqnroll.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
