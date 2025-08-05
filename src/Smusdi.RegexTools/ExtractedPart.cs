@@ -26,7 +26,7 @@ public sealed class ExtractedPart
         {
             ExtractedPartType.Text => value,
             ExtractedPartType.Number => double.Parse(value, CultureInfo.InvariantCulture),
-            ExtractedPartType.Date => DateOnly.ParseExact(value, this.Format!, CultureInfo.InvariantCulture),
+            ExtractedPartType.Date => DateOnly.ParseExact(value, this.Format!, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces),
             ExtractedPartType.Time => TimeOnly.Parse(value, CultureInfo.InvariantCulture),
             _ => value,
         };

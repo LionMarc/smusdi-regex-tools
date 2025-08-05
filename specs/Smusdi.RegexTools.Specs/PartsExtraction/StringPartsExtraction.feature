@@ -54,6 +54,24 @@ Scenario: Extracting part of type Date
     }
     """
 
+Scenario: Extracting part of type Date with extra whitespaces
+    Given the string part extractor with expression "^(?<date>.*)_" and parts
+        | Name | Type | Format     |
+        | date | Date | MMM d yyyy |
+    When I extract parts from string "Aug  7 2025_test.txt"
+    Then I get the extraction result
+    """
+    {
+        "IsValid": true,
+        "ExpectedPartsCount": 1,
+        "Errors": {
+        },
+        "ExtractedParts": {
+            "date" : "2025-08-07"
+        }
+    }
+    """
+
 Scenario: Extracting part of type Number
     Given the string part extractor with expression "^Index: (?<close>.*)$" and parts
         | Name  | Type   | Format |
