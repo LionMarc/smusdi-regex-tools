@@ -10,7 +10,7 @@ public sealed class StringPartsExtractor
     public StringPartsExtractor(string expression, IEnumerable<ExtractedPart> parts)
     {
         this.Expression = expression;
-        this.parts = new List<ExtractedPart>(parts ?? Enumerable.Empty<ExtractedPart>());
+        this.parts = [.. parts ?? []];
         this.expressionRegex = new Lazy<Regex>(() => new Regex(this.Expression));
     }
 

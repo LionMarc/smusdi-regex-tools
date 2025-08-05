@@ -1,14 +1,8 @@
 ﻿namespace Smusdi.RegexTools;
 
-public sealed class RegexValidationResult
+public sealed class RegexValidationResult(bool isValid, string? error = null)
 {
-    public RegexValidationResult(bool isValid, string? error = null)
-    {
-        this.IsValid = isValid;
-        this.Error = error;
-    }
+    public bool IsValid { get; } = isValid;
 
-    public bool IsValid { get; }
-
-    public string? Error { get; }
+    public string? Error { get; } = error;
 }

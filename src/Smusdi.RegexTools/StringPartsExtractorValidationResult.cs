@@ -1,15 +1,10 @@
 ﻿namespace Smusdi.RegexTools;
 
-public sealed class StringPartsExtractorValidationResult
+public sealed class StringPartsExtractorValidationResult(bool isValid = true)
 {
-    private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
+    private readonly Dictionary<string, List<string>> errors = [];
 
-    public StringPartsExtractorValidationResult(bool isValid = true)
-    {
-        this.IsValid = isValid;
-    }
-
-    public bool IsValid { get; private set; }
+    public bool IsValid { get; private set; } = isValid;
 
     public IDictionary<string, List<string>> Errors => this.errors;
 
@@ -17,7 +12,7 @@ public sealed class StringPartsExtractorValidationResult
     {
         if (!this.errors.TryGetValue(propertyName, out var list))
         {
-            list = new List<string>();
+            list = [];
             this.errors[propertyName] = list;
         }
 
