@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.JsonDiffPatch;
 using System.Text.Json.Nodes;
 using AwesomeAssertions;
 using Reqnroll;
@@ -47,7 +46,9 @@ public class Steps
     {
         var expected = JsonNode.Parse(multilineText);
         var current = JsonNode.Parse(JsonSerializer.Serialize(this.extracted));
-        var diff = current.Diff(expected);
-        diff.Should().BeNull();
+
+        var areEquals = JsonNode.DeepEquals(current, expected);
+
+        areEquals.Should().BeTrue();
     }
 }
