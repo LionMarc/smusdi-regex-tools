@@ -51,14 +51,25 @@ jobs:
         output: both
         thresholds: '60 80'
     - run: mv code-coverage-results.md dotnet-code-coverage-results.md
+
+    # Read the coverage file into a workflow output so peter-evans action can use it as the comment body
+    - name: Read coverage file
+      id: coverage
+      if: github.event_name == 'pull_request'
+      run: |
+        if [ -f dotnet-code-coverage-results.md ]; then
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          cat dotnet-code-coverage-results.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "report=No coverage file found." >> $GITHUB_OUTPUT
+        fi
+
     - name: Add Coverage PR Comment
       if: github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          .NET
-          
-          $(cat dotnet-code-coverage-results.md)
+        body: ${{ steps.coverage.outputs.report }}
         edit-mode: replace
