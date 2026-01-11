@@ -22,13 +22,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c Release --no-restore -p:Version=7.${{ inputs.dotnet_package_version }}
+      run: dotnet build -c Release --no-restore -p:Version=10.${{ inputs.dotnet_package_version }}
     - name: Test
       run: dotnet test -c Release --no-build --verbosity normal --logger "trx;LogFileName=../../../results/test-results.trx" --collect:"XPlat Code Coverage" --results-directory ./coverage
     - name: Test packing
@@ -51,11 +51,25 @@ jobs:
         output: both
         thresholds: '60 80'
     - run: mv code-coverage-results.md dotnet-code-coverage-results.md
-    - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
+
+    # Read the coverage file into a workflow output so peter-evans action can use it as the comment body
+    - name: Read coverage file
+      id: coverage
       if: github.event_name == 'pull_request'
+      run: |
+        if [ -f dotnet-code-coverage-results.md ]; then
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          cat dotnet-code-coverage-results.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "report=No coverage file found." >> $GITHUB_OUTPUT
+        fi
+
+    - name: Add Coverage PR Comment
+      if: github.event_name == 'pull_request'
+      uses: peter-evans/create-or-update-comment@v4
       with:
-        header: .NET
-        message: .NET coverage
-        recreate: true
-        path: dotnet-code-coverage-results.md
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: ${{ steps.coverage.outputs.report }}
+        edit-mode: replace

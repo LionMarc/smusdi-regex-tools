@@ -15,7 +15,6 @@
     <PackageReference Include="Reqnroll.Tools.MsBuild.Generation"/>
     <PackageReference Include="JunitXml.TestLogger"/>
     <PackageReference Include="AwesomeAssertions"/>
-    <PackageReference Include="SystemTextJson.JsonDiffPatch"/>
   </ItemGroup>
 
   <ItemGroup>

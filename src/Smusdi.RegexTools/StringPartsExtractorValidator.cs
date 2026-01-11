@@ -83,14 +83,7 @@ public sealed class StringPartsExtractorValidator
     private void MustDeclaredPartsBeSameAsDefinedOnes(StringPartsExtractor extractor, StringPartsExtractorValidationResult validationResult)
     {
         var declaredNames = new HashSet<string>(extractor.Parts.Select(p => p.Name));
-        var notSet = new List<string>();
-        foreach (var found in this.extractedGroupNames)
-        {
-            if (!declaredNames.Remove(found))
-            {
-                notSet.Add(found);
-            }
-        }
+        List<string> notSet = [.. this.extractedGroupNames.Where(found => !declaredNames.Remove(found))];
 
         var messageBuilder = new StringBuilder();
         if (notSet.Count > 0)
