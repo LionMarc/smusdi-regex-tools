@@ -14,7 +14,7 @@
     <PackageVersion Include="Reqnroll" Version="3.3.4" />
     <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="3.3.4" />
     <PackageVersion Include="Reqnroll.xUnit" Version="3.3.4" />
-    <PackageVersion Include="JunitXml.TestLogger" Version="8.0.0"/>
+    <PackageVersion Include="JunitXml.TestLogger" Version="8.1.0"/>
     <PackageVersion Include="AwesomeAssertions" Version="9.6.0" />
   </ItemGroup>
 </Project>
